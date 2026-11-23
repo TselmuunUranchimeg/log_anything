@@ -1,12 +1,13 @@
-FROM golang:1.27.4-alpine AS build
-WORKDIR /src
+FROM golang:1.27.4
 
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /out/server ./cmd
+LABEL maintainer="Tselmuun"
 
-FROM gcr.io/distroless/static-debian12:nonroot
-COPY --from=build /out/server /server
+WORKDIR /server
+
+COPY .. ./
+
+RUN CGO_ENABLED=0 GOOS=linux go build -v -o server .
 
 EXPOSE 8000
-USER nonroot:nonroot
-ENTRYPOINT ["/server"]
+
+CMD ["./server"]
